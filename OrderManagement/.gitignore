@@ -1,0 +1,14 @@
+# .NET build files
+bin/
+obj/
+
+# IDE
+.vs/
+
+# Environment variables
+.env
+.env.*
+!.env.example
+
+# OS
+.DS_Store
