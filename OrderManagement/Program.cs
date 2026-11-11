@@ -1,13 +1,25 @@
+using Microsoft.EntityFrameworkCore;
+using OrderManagement.Data;
+using OrderManagement.Repositories;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-
 builder.Services.AddControllers(); // Ovde registrujem servise za kontrolere
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi(); // ovde registrujem servise za generisanje OepenAPI dokumentacije
 
 // AddScoped - registruje servis koji ce biti kreiran za svaki zahtev (request) i unisten nakon zavrsetka obrade zahteva
 // Tu je razlika u odnosu na javu jer je u javi default singleton a ovo bi bio ekvivalent @RequestScope
+
+builder.Services.AddScoped<IProductRepository, ProductRepository>();
+
+// Konekcija ka bazi podataka se konfiguriše u appsettings.json fajlu, a ovde se samo registruje servis za DbContext koji ce koristiti tu konekciju. U Spring Boot-u bi ovo bilo ekvivalentno @EnableJpaRepositories i @EntityScan anotacijama, kao i konfiguraciji DataSource-a u application.properties ili application.yml fajlu.
+var connectionString = builder.Configuration
+    .GetConnectionString("DefaultConnection")
+    ?? throw new InvalidOperationException("Connection string not found.");
+
+builder.Services.AddDbContext<AppDbContext>(options =>
+    options.UseNpgsql(connectionString));
 
 
 var app = builder.Build();
