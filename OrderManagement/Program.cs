@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using OrderManagement.Data;
 using OrderManagement.Repositories;
 using OrderManagement.Services;
+using OrderManagement.Exceptions;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -23,8 +24,11 @@ var connectionString = builder.Configuration
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(connectionString));
 
+builder.Services.AddExceptionHandler<GlobalExceptionHandler>(); // registruje naš handler u DI container. U Spring Boot-u bi ovo bilo ekvivalentno @ControllerAdvice anotaciji i implementaciji ExceptionHandler interfejsa.
+builder.Services.AddProblemDetails(); // registruje servis za ProblemDetails koji je standardizovani format za prikazivanje grešaka u REST API-ima. U Spring Boot-u bi ovo bilo ekvivalentno @RestControllerAdvice anotaciji i implementaciji ResponseEntityExceptionHandler klase.
 
 var app = builder.Build();
+app.UseExceptionHandler(); // registruje middleware koji ce koristiti naš handler za obradu izuzetaka. U Spring Boot-u bi ovo bilo ekvivalentno @ControllerAdvice anotaciji i implementaciji ExceptionHandler interfejsa, kao i konfiguraciji ExceptionHandlerExceptionResolver-a.
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
