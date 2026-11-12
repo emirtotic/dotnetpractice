@@ -49,4 +49,32 @@ public class ProductsController : ControllerBase
             createdProduct
         );
     }
+
+    [HttpPut("{id:long}")]
+    public async Task<ActionResult<ProductResponse>> UpdateAsync(
+        long id,
+        [FromBody] UpdateProductRequest request)
+    {
+        var updatedProduct = await _productService.UpdateAsync(id, request);
+
+        if (updatedProduct is null)
+        {
+            return NotFound();
+        }
+
+        return Ok(updatedProduct);
+    }
+
+    [HttpDelete("{id:long}")]
+    public async Task<ActionResult> DeleteAsync(long id)
+    {
+        var deleted = await _productService.DeleteAsync(id);
+
+        if (!deleted)
+        {
+            return NotFound();
+        }
+
+        return Ok();
+    }
 }
