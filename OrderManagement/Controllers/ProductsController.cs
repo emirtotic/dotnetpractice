@@ -78,9 +78,10 @@ public class ProductsController : ControllerBase
         return Ok();
     }
 
+    
     [HttpGet("test-error")]
     public IActionResult TestError()
     {
-        throw new InvalidOperationException("Test exception");
+        throw new InvalidOperationException("Testing exception to see does it work :)");
     }
 }
