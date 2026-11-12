@@ -48,6 +48,30 @@ public class ProductService : IProductService
             .ToList();
     }
 
+    public async Task<ProductResponse?> UpdateAsync(long id, UpdateProductRequest request)
+    {
+        var updatedProduct = new Product
+        {
+            Name = request.Name,
+            Price = request.Price,
+            StockQuantity = request.StockQuantity
+        };
+
+        var product = await _productRepository.UpdateAsync(id, updatedProduct);
+
+        if (product is null)
+        {
+            return null;
+        }
+
+        return ToResponse(product);
+    }
+
+    public async Task<bool> DeleteAsync(long id)
+    {
+        return await _productRepository.DeleteAsync(id);
+    }
+
     private static ProductResponse ToResponse(Product product)
     {
         return new ProductResponse(

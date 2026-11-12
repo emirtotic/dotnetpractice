@@ -31,4 +31,35 @@ public class ProductRepository : IProductRepository
         await _context.SaveChangesAsync();
         return product;
     }
+
+    public async Task<Product?> UpdateAsync(long id, Product updatedProduct)
+    {
+        var existingProduct = await _context.Products.FindAsync(id);
+        if (existingProduct is null)
+        {
+            return null;
+        }
+
+        existingProduct.Name = updatedProduct.Name;
+        existingProduct.Price = updatedProduct.Price;
+        existingProduct.StockQuantity = updatedProduct.StockQuantity;
+
+        await _context.SaveChangesAsync();
+        return existingProduct;
+    }
+
+    public async Task<bool> DeleteAsync(long id)
+    {
+        var product = await _context.Products.FindAsync(id);
+        if (product is null)
+        {
+            return false;
+        }
+
+        _context.Products.Remove(product);
+        await _context.SaveChangesAsync();
+        return true;
+    }
+
+
 }
